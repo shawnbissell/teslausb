@@ -186,3 +186,6 @@ export WIFIPASS='your_pass'
 
 # Uncomment and change if you want a different branch than main-dev
 # export BRANCH=main-dev
+
+# Uncomment and change if you want to change the number of days to keep archived clips
+# export NUM_DAYS_TO_KEEP=30

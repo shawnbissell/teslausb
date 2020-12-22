@@ -56,6 +56,7 @@ function read_setup_variables {
   export CAM_SIZE=${CAM_SIZE:-90%}
   export MUSIC_SIZE=${MUSIC_SIZE:-0}
   export USB_DRIVE=${USB_DRIVE:-''}
+  export NUM_DAYS_TO_KEEP=${NUM_DAYS_TO_KEEP:-30}
 }
 
 if [ "$0" = "-bash" ]

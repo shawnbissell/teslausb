@@ -4,6 +4,7 @@ log "Moving clips to archive..."
 
 NUM_FILES_MOVED=0
 NUM_FILES_FAILED=0
+NUM_FILES_DELETED=0
 
 function connectionmonitor {
   while true
@@ -28,6 +29,9 @@ function connectionmonitor {
 
 function moveclips() {
   cd "$1"
+  
+  x_days_ago=$(date -d 'now - $NUM_DAYS_TO_KEEP days' +%s)
+  log "Will delete moved files older than $x_days_ago time"
 
   while IFS= read -r srcfile
   do
@@ -48,10 +52,16 @@ function moveclips() {
         fi
       fi
 
-      if mv -f "$srcfile" "$destdir"
+      if cp -f "$srcfile" "$destdir"
       then
-        log "Moved '$srcfile'"
+        log "Copied '$srcfile'"
         NUM_FILES_MOVED=$((NUM_FILES_MOVED + 1))
+        file_time=$(date -r "$filename" +%s)
+        if ((file_time <= x_days_ago));
+        then
+          rm -f "$srcfile"
+          NUM_FILES_DELETED=$((NUM_FILES_DELETED + 1))
+        fi
       else
         log "Failed to move '$srcfile'"
         NUM_FILES_FAILED=$((NUM_FILES_FAILED + 1))
@@ -100,7 +110,7 @@ log "Moved $NUM_FILES_MOVED file(s), failed to copy ${NUM_FILES_FAILED}."
 
 if [ $NUM_FILES_MOVED -gt 0 ]
 then
-  /root/bin/send-push-message "$TESLAUSB_HOSTNAME:" "Moved $NUM_FILES_MOVED dashcam file(s), failed to copy ${NUM_FILES_FAILED}."
+  /root/bin/send-push-message "$TESLAUSB_HOSTNAME:" "Moved $NUM_FILES_MOVED dashcam file(s), deleted $NUM_FILES_DELETED old file(s), failed to copy ${NUM_FILES_FAILED}."
 fi
 
 log "Finished moving clips to archive."
