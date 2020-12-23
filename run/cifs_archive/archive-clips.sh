@@ -43,38 +43,52 @@ function moveclips() {
     # Remove the 'TeslaCam' folder
     destfile="$srcfile"
     destdir="$ARCHIVE_MOUNT"/$(dirname "$destfile")
-
+    delete_if_old=false
     if [ -f "$srcfile" ]
     then
-      log "Moving '$srcfile'"
-      if [ ! -e "$destdir" ]
+      log "Checking if $destdir/$destfile already exists"
+      if [ ! -e "$destdir/$destfile" ]
       then
-        log "Creating output directory '$destdir'"
-        if ! mkdir -p "$destdir"
+        log "Copying '$srcfile'"
+        if [ ! -e "$destdir" ]
         then
-          log "Failed to create '$destdir', check that archive server is writable and has free space"
-          return
+          log "Creating output directory '$destdir'"
+          if ! mkdir -p "$destdir"
+          then
+            log "Failed to create '$destdir', check that archive server is writable and has free space"
+            return
+          fi
         fi
-      fi
 
-      if cp -f "$srcfile" "$destdir"
-      then
-        log "Copied '$srcfile'"
-        NUM_FILES_MOVED=$((NUM_FILES_MOVED + 1))
-        file_time=$(date -r "$srcfile" +%s)
-        log "file_time = $file_time"
-        if [ $NUM_DAYS_TO_KEEP -ge 0 ] && [ $file_time -le $x_days_ago ]
+        if cp -f "$srcfile" "$destdir"
         then
-          log "Deleting '$srcfile' with filetime $file_time"
-          rm -f "$srcfile"
-          NUM_FILES_DELETED=$((NUM_FILES_DELETED + 1))
+          log "Copied '$srcfile'"
+          NUM_FILES_MOVED=$((NUM_FILES_MOVED + 1))
+          delete_if_old=true
+        else
+          log "Failed to move '$srcfile'"
+          NUM_FILES_FAILED=$((NUM_FILES_FAILED + 1))
         fi
       else
-        log "Failed to move '$srcfile'"
-        NUM_FILES_FAILED=$((NUM_FILES_FAILED + 1))
+        log "Already exists ... will delete if old"
+        delete_if_old=true
       fi
     else
       log "$srcfile not found"
+    fi
+
+    if ["$delete_if_old" = true]
+    then
+      file_time=$(date -r "$srcfile" +%s)
+      log "file_time = $file_time"
+      if [ $NUM_DAYS_TO_KEEP -ge 0 ] && [ $file_time -le $x_days_ago ]
+      then
+        log "Deleting '$srcfile' with filetime $file_time"
+        rm -f "$srcfile"
+        NUM_FILES_DELETED=$((NUM_FILES_DELETED + 1))
+      else 
+        log "Keeping '$srcfile' with filetime $file_time"
+      fi
     fi
   done < "$2"
 }
