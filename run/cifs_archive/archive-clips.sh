@@ -77,7 +77,7 @@ function moveclips() {
       log "$srcfile not found"
     fi
 
-    if ["$delete_if_old" = true]
+    if [ "$delete_if_old" = true ]
     then
       file_time=$(date -r "$srcfile" +%s)
       log "file_time = $file_time"
