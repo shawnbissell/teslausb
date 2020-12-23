@@ -46,8 +46,8 @@ function moveclips() {
     delete_if_old=false
     if [ -f "$srcfile" ]
     then
-      log "Checking if $destdir/$destfile already exists"
-      if [ ! -e "$destdir/$destfile" ]
+      log "Checking if $ARCHIVE_MOUNT/$destfile already exists"
+      if [ ! -e "$ARCHIVE_MOUNT/$destfile" ]
       then
         log "Copying '$srcfile'"
         if [ ! -e "$destdir" ]
@@ -70,7 +70,7 @@ function moveclips() {
           NUM_FILES_FAILED=$((NUM_FILES_FAILED + 1))
         fi
       else
-        log "Already exists ... will delete if old"
+        log "Already archived ... will delete if old"
         delete_if_old=true
       fi
     else
