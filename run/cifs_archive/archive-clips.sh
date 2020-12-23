@@ -29,12 +29,13 @@ function connectionmonitor {
 
 function moveclips() {
   cd "$1"
+  log "Archiving $1 ..."
   log "NUM_DAYS_TO_KEEP = $NUM_DAYS_TO_KEEP"
   x_days_ago=$(date -d 'now - $NUM_DAYS_TO_KEEP days' +%s)
   log "x_days_ago = $x_days_ago"
   if [ $NUM_DAYS_TO_KEEP -ge 0 ]
   then
-    log "Will delete moved files older than $x_days_ago time"
+    log "Will delete archived files older than $x_days_ago time"
   fi
 
   while IFS= read -r srcfile
