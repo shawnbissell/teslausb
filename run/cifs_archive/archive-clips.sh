@@ -31,7 +31,10 @@ function moveclips() {
   cd "$1"
   
   x_days_ago=$(date -d 'now - $NUM_DAYS_TO_KEEP days' +%s)
-  log "Will delete moved files older than $x_days_ago time"
+  if [ $NUM_DAYS_TO_KEEP -ge 0 ]
+  then
+    log "Will delete moved files older than $x_days_ago time"
+  fi
 
   while IFS= read -r srcfile
   do
@@ -57,8 +60,9 @@ function moveclips() {
         log "Copied '$srcfile'"
         NUM_FILES_MOVED=$((NUM_FILES_MOVED + 1))
         file_time=$(date -r "$filename" +%s)
-        if ((file_time <= x_days_ago));
+        if [ $NUM_DAYS_TO_KEEP -ge 0 ] && [ $file_time -le $x_days_ago ]
         then
+          log "Deleting '$srcfile' with filetime $file_time"
           rm -f "$srcfile"
           NUM_FILES_DELETED=$((NUM_FILES_DELETED + 1))
         fi
