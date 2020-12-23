@@ -47,7 +47,7 @@ function moveclips() {
     if [ -f "$srcfile" ]
     then
       log "Checking if $ARCHIVE_MOUNT/$destfile already exists"
-      if [ ! -e "$ARCHIVE_MOUNT/$destfile" ]
+      if [ ! -e "$ARCHIVE_MOUNT/$destfile" ] || [[ $(stat -c%s $srcfile) -gt $(stat -c%s $ARCHIVE_MOUNT/$destfile) ]]
       then
         log "Copying '$srcfile'"
         if [ ! -e "$destdir" ]
