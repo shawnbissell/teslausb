@@ -61,7 +61,8 @@ function moveclips() {
       then
         log "Copied '$srcfile'"
         NUM_FILES_MOVED=$((NUM_FILES_MOVED + 1))
-        file_time=$(date -r "$filename" +%s)
+        file_time=$(date -r "$srcfile" +%s)
+        log "file_time = $file_time"
         if [ $NUM_DAYS_TO_KEEP -ge 0 ] && [ $file_time -le $x_days_ago ]
         then
           log "Deleting '$srcfile' with filetime $file_time"
