@@ -31,7 +31,7 @@ function moveclips() {
   cd "$1"
   log "Archiving $1 ..."
   log "NUM_DAYS_TO_KEEP = $NUM_DAYS_TO_KEEP"
-  x_days_ago=$(date -d 'now - $NUM_DAYS_TO_KEEP days' +%s)
+  x_days_ago=$(date -d 'now - '$NUM_DAYS_TO_KEEP' days' +%s)
   log "x_days_ago = $x_days_ago"
   if [ $NUM_DAYS_TO_KEEP -ge 0 ]
   then
