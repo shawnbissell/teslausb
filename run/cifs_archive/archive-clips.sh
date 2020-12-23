@@ -129,7 +129,7 @@ kill %1
 
 log "Moved $NUM_FILES_MOVED file(s), failed to copy ${NUM_FILES_FAILED}."
 
-if [ $NUM_FILES_MOVED -gt 0 ]
+if [ $NUM_FILES_MOVED -gt 0 ] || [ $NUM_FILES_DELETED -gt 0 ] || [ $NUM_FILES_FAILED -gt 0 ]
 then
   /root/bin/send-push-message "$TESLAUSB_HOSTNAME:" "Moved $NUM_FILES_MOVED dashcam file(s), deleted $NUM_FILES_DELETED old file(s), failed to copy ${NUM_FILES_FAILED}."
 fi
